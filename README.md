@@ -14,7 +14,7 @@ package main
 import (
 	"fmt"
 
-	ilkbyte "github.com/umtaktpe/api-go"
+	ilkbyte "github.com/ilkbyte/api-go"
 )
 
 func main() {
