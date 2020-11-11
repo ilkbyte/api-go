@@ -1,65 +1,62 @@
 package ilkbyte
 
 import (
-	"io/ioutil"
-	"log"
+	"encoding/json"
 	"net/http"
-	"net/url"
-	"os"
-
-	"github.com/joho/godotenv"
+	"time"
 )
 
-type QueryBuilder struct {
-	Endpoint string
-	Query    map[string]string
+const BaseURLV1 = "https://api.ilkbyte.com"
+
+type Client struct {
+	BaseURL    string
+	Access     string
+	Secret     string
+	HTTPClient *http.Client
 }
 
-type Options struct {
-	Access  string
-	Secret  string
-	BaseURL string
+type Response struct {
+	Status  bool        `json:"status"`
+	Error   string      `json:"error"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"data"`
 }
 
-func (options *Options) new() *Options {
-	godotenv.Load()
-
-	options.Access = os.Getenv("ILKBYTE_ACCESSKEY")
-	options.Secret = os.Getenv("ILKBYTE_SECRETKEY")
-	options.BaseURL = "https://api.ilkbyte.com"
-
-	return options
+func NewClient(access, secret string) *Client {
+	return &Client{
+		BaseURL: BaseURLV1,
+		Access:  access,
+		Secret:  secret,
+		HTTPClient: &http.Client{
+			Timeout: time.Minute,
+		},
+	}
 }
 
-func Request(queryBuilder *QueryBuilder) string {
-	options := &Options{}
-	options = options.new()
+func (c *Client) sendRequest(req *http.Request, v interface{}, params map[string]string) error {
+	req.Header.Set("Content-Type", "application/json; charset=utf-8")
+	req.Header.Set("Accept", "application/json; charset=utf-8")
 
-	baseURL, err := url.Parse(options.BaseURL + queryBuilder.Endpoint)
-
-	params := url.Values{}
-	params.Add("secret", options.Secret)
-	params.Add("access", options.Access)
-
-	if len(queryBuilder.Query) > 0 {
-		for k, v := range queryBuilder.Query {
-			params.Add(k, v)
+	q := req.URL.Query()
+	q.Add("access", c.Access)
+	q.Add("secret", c.Secret)
+	if len(params) > 0 {
+		for k, v := range params {
+			q.Add(k, v)
 		}
 	}
+	req.URL.RawQuery = q.Encode()
 
-	baseURL.RawQuery = params.Encode()
-
-	resp, err := http.Get(baseURL.String())
+	res, err := c.HTTPClient.Do(req)
 	if err != nil {
-		log.Fatalln(err)
+		return err
 	}
 
-	defer resp.Body.Close()
+	defer res.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		log.Fatalln(err)
+	if err = json.NewDecoder(res.Body).Decode(&v); err != nil {
+		return err
 	}
 
-	return string(body)
+	return nil
 }

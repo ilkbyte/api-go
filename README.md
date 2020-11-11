@@ -5,16 +5,6 @@ This package developed for go package.
 #### **Installation**
 
 `go get github.com/ilkbyte/api-go`
-
-
-#### **Configuration**
-
-You should add below parameters in .env file.
-
-```
-ILKBYTE_ACCESSKEY=''
-ILKBYTE_SECRETKEY=''
-```
     
 #### **Usage**
 
@@ -24,13 +14,13 @@ package main
 import (
 	"fmt"
 
-	ilkbyte "github.com/umtaktpe/api-go/src"
+	ilkbyte "github.com/umtaktpe/api-go"
 )
 
 func main() {
-	server := &ilkbyte.Server{}
+	c := ilkbyte.NewClient("access_key", "secret_key")
 
-	fmt.Println(server.All())
+	fmt.Println(c.GetAllServers())
 }
 ```
 
@@ -39,65 +29,43 @@ func main() {
 ##### **Server**
 
 ```go
-server := &ilkbyte.Server{}
+c := ilkbyte.NewClient("access_key", "secret_key")
 // get all servers
-server.All()
+c.GetAllServers()
 // get only active servers
-server.Active()
+c.GetActiveServers()
 // Get server configs you can choose
-server.Config()
+c.GetServerConfig()
 // create a new server
-server.Create(map[string]string{
-    "username": "username",
-    "password": "password",
-    "name": "name",
-    "os_id": "osID",
-    "app_id": "appID",
-    "package_id": "packageID",
-    "sshkey": "sshKey",
-})
+c.CreateServer("name", "username", "password", "osid", "appid", "packageid", "sshkey")
 // Get server details
-server.Show("server-name")
+c.GetServerDetails("servername")
 // Server power settings
-server.Power("server-name", "status-value")
+c.PowerServer("servername", "status")
 // Get all ips from server
-server.IP("server-name")
+c.GetServerIPList("servername")
 // Get ip logs
-server.IPLogs("server-name")
+c.GetServerIPLogs("servername")
 // Add a new rdns record
-server.IPRdns("server-name", map[string]string{
-    "ip": "ip-address",
-    "rdns": "rdns-name",
-})
+c.ServerIPRdns("servername", "ip", "rdns")
 ```
 
 ##### **Domain**
 
 ```go
-domain := &ilkbyte.Domain{}
+c := ilkbyte.NewClient("access_key", "secret_key")
 // Get all domains
-domain.All()
+c.GetDomains()
 // Create a new domain
-domain.Create(map[string]string{
-    "domain": "domain-name",
-})
+c.CreateDomain("domain", "server_name", "ipv6")
 // Get domain details
-domain.Show("domain-name")
+c.GetDNSDetails("domainname")
 // Add a new record
-domain.Add("domain-name", map[string]string{
-    "record_name": "recordName",
-    "record_type": "recordType",
-    "record_content": "recordContent",
-    "record_priority": "recordPriority"
-})
+c.DNSAdd("domainname", "record_name", "record_content", "record_priority", "record_type")
 // Update an existing record
-domain.Update("domain-name", map[string]string{
-    "record_id": "recordID",
-    "record_content": "recordContent",
-    "record_priority": "recordPriority",
-})
+c.DNSUpdate("domainname", "record_content", "record_id", "record_priority")
 // Delete domain
-domain.Delete("domain-name")
+c.DNSDelete("domainname", "record_id")
 // Push changes to server
-domain.Push("domain-name")
+c.DNSPush("domainname")
 ```
