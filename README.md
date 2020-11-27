@@ -26,6 +26,14 @@ func main() {
 
 #### **Avalaible Methods**
 
+##### **Account**
+```go
+c := ilkbyte.NewClient("access_key", "secret_key")
+// get your account's info.
+c.GetAccountInfo()
+// get your account users.
+c.GetAccountUsers()
+```
 ##### **Server**
 
 ```go
@@ -48,6 +56,34 @@ c.GetServerIPList("servername")
 c.GetServerIPLogs("servername")
 // Add a new rdns record
 c.ServerIPRdns("servername", "ip", "rdns")
+```
+
+##### **Backup**
+```go
+c := ilkbyte.NewClient("access_key", "secret_key")
+// Get backup list.
+c.GetAllBackup("servername")
+// Restore your backup.
+c.BackupRestore("servername", "backupname")
+```
+
+##### **Snapshot**
+```go
+c := ilkbyte.NewClient("access_key", "secret_key")
+// Get all snapshots.
+c.GetAllSnapshots("servername")
+// Create a new snapshot.
+c.CreateSnapshot("servername", "snapshotname")
+// Revert snapshot.
+c.RevertSnapshot("servername", "snapshotname")
+// Recreate your snapshot.
+c.UpdateSnapshot("servername", "snapshotname")
+// Delete snapshot.
+c.DeleteSnapshot("servername", "snapshotname")
+// Add cron to your snapshot.
+c.AddCronSnapshot("servername", "snapshotname", "day", "hour", "minute")
+// Delete cron.
+c.DeleteCronSnapshot("snapshotname", "snapshotname")
 ```
 
 ##### **Domain**
