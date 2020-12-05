@@ -6,19 +6,14 @@ import (
 
 type Domain struct {
 	Pagination struct {
-		CurrentPage int `json:"CurrentPage"`
+		CurrentPage int `json:"current_page"`
+		TotalPage   int `json:"total_page"`
 	} `json:"pagination"`
 	DomainList []struct {
-		Domain string `json:"domain"`
-		IPV4   struct {
-			ID        int    `json:"id"`
-			Master    string `json:"master"`
-			Slave     string `json:"slave"`
-			InService bool   `json:"in_service"`
-			IsLocked  bool   `json:"is_locked"`
-			Hash      string `json:"hash"`
-			Created   string `json:"created"`
-			Updated   string `json:"updated"`
+		Domain     string `json:"domain"`
+		Nameserver struct {
+			Master string `json:"master"`
+			Slave  string `json:"slave"`
 		} `json:"ipv4"`
 	} `json:"domain_list"`
 }
