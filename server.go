@@ -7,8 +7,8 @@ import (
 
 type Server struct {
 	Pagination struct {
-		CurrentPage int `json:"CurrentPage"`
-		TotalPage   int `json:"TotalPage"`
+		CurrentPage int `json:"current_page"`
+		TotalPage   int `json:"total_page"`
 	} `json:"pagination"`
 	ServerList []struct {
 		BandwidthLimit int64  `json:"bandwidth_limit"`
