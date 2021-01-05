@@ -2,53 +2,22 @@ package ilkbyte
 
 import (
 	"net/http"
+	"strconv"
+
+	"github.com/ilkbyte/api-go/models"
 )
 
-type Domain struct {
-	Pagination struct {
-		CurrentPage int `json:"current_page"`
-		TotalPage   int `json:"total_page"`
-	} `json:"pagination"`
-	DomainList []struct {
-		Domain     string `json:"domain"`
-		Nameserver struct {
-			Master string `json:"master"`
-			Slave  string `json:"slave"`
-		} `json:"ipv4"`
-	} `json:"domain_list"`
-}
-
-type DNSDetails struct {
-	Records []struct {
-		Content string `json:"content"`
-		ID      int    `json:"id"`
-		Name    string `json:"name"`
-		Prio    int    `json:"int"`
-		TTL     int    `json:"ttl"`
-		Type    string `json:"type"`
-	} `json:"records"`
-}
-
-type Record struct {
-	Record struct {
-		Name    string `json:"name"`
-		Type    string `json:"type"`
-		Content string `json:"content"`
-		TTL     int    `json:"ttl"`
-		Prio    int    `json:"prio"`
-	} `json:"record"`
-}
-
-func (c *Client) GetDomains() (*Response, error) {
+func (c *Client) GetDomains(page int) (*models.Domain, error) {
+	params := map[string]string{
+		"p": strconv.Itoa(page),
+	}
 	req, err := http.NewRequest("GET", c.BaseURL+"/domain/list", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := Response{
-		Data: &Domain{},
-	}
-	if err := c.sendRequest(req, &res, nil); err != nil {
+	var res models.Domain
+	if err := c.sendRequest(req, &res, params); err != nil {
 		return nil, err
 	}
 
@@ -75,16 +44,13 @@ func (c *Client) CreateDomain(domain, serverName, ipv6 string) (*Response, error
 	return &res, nil
 }
 
-func (c *Client) GetDNSDetails(domainName string) (*Response, error) {
+func (c *Client) GetDNSDetails(domainName string) (*models.DNSDetails, error) {
 	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/show", nil)
 	if err != nil {
 		return nil, err
 	}
 
-	res := Response{
-		Data: &DNSDetails{},
-	}
-
+	var res models.DNSDetails
 	if err := c.sendRequest(req, &res, nil); err != nil {
 		return nil, err
 	}
@@ -92,7 +58,7 @@ func (c *Client) GetDNSDetails(domainName string) (*Response, error) {
 	return &res, nil
 }
 
-func (c *Client) DNSAdd(domainName, recordName, recordContent, recordPriority, recordType string) (*Response, error) {
+func (c *Client) DNSAdd(domainName, recordName, recordContent, recordPriority, recordType string) (*models.Record, error) {
 	params := make(map[string]string)
 	params["record_name"] = recordName
 	params["record_content"] = recordContent
@@ -105,10 +71,7 @@ func (c *Client) DNSAdd(domainName, recordName, recordContent, recordPriority, r
 		return nil, err
 	}
 
-	res := Response{
-		Data: &Record{},
-	}
-
+	var res models.Record
 	if err := c.sendRequest(req, &res, params); err != nil {
 		return nil, err
 	}
@@ -116,7 +79,7 @@ func (c *Client) DNSAdd(domainName, recordName, recordContent, recordPriority, r
 	return &res, nil
 }
 
-func (c *Client) DNSUpdate(domainName, recordContent, recordId, recordPriority string) (*Response, error) {
+func (c *Client) DNSUpdate(domainName, recordContent, recordId, recordPriority string) (*models.Record, error) {
 	params := make(map[string]string)
 	params["record_content"] = recordContent
 	params["record_id"] = recordId
@@ -128,10 +91,7 @@ func (c *Client) DNSUpdate(domainName, recordContent, recordId, recordPriority s
 		return nil, err
 	}
 
-	res := Response{
-		Data: &Record{},
-	}
-
+	var res models.Record
 	if err := c.sendRequest(req, &res, params); err != nil {
 		return nil, err
 	}
@@ -149,7 +109,6 @@ func (c *Client) DNSDelete(domainName, recordId string) (*Response, error) {
 	}
 
 	res := Response{}
-
 	if err := c.sendRequest(req, &res, params); err != nil {
 		return nil, err
 	}
@@ -164,7 +123,6 @@ func (c *Client) DNSPush(domainName string) (*Response, error) {
 	}
 
 	res := Response{}
-
 	if err := c.sendRequest(req, &res, nil); err != nil {
 		return nil, err
 	}
