@@ -39,9 +39,9 @@ c.GetAccountUsers()
 ```go
 c := ilkbyte.NewClient("access_key", "secret_key")
 // get all servers
-c.GetAllServers()
+c.GetAllServers("page_number")
 // get only active servers
-c.GetActiveServers()
+c.GetActiveServers("page_number")
 // Get server configs you can choose
 c.GetServerConfig()
 // create a new server
@@ -91,7 +91,7 @@ c.DeleteCronSnapshot("snapshotname", "snapshotname")
 ```go
 c := ilkbyte.NewClient("access_key", "secret_key")
 // Get all domains
-c.GetDomains()
+c.GetDomains("page_number")
 // Create a new domain
 c.CreateDomain("domain", "server_name", "ipv6")
 // Get domain details
