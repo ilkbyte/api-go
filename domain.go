@@ -1,129 +1,114 @@
 package ilkbyte
 
 import (
-	"net/http"
 	"strconv"
 
 	"github.com/ilkbyte/api-go/models"
 )
 
+// GetDomains -- Code commentation required
 func (c *Client) GetDomains(page int) (*models.Domain, error) {
-	params := map[string]string{
-		"p": strconv.Itoa(page),
-	}
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/list", nil)
-	if err != nil {
-		return nil, err
-	}
+	var (
+		params = map[string]string{
+			"p": strconv.Itoa(page),
+		}
+		res models.Domain
+	)
 
-	var res models.Domain
-	if err := c.sendRequest(req, &res, params); err != nil {
+	if err := c.getRequest(&res, "/domain/list", params); err != nil {
 		return nil, err
 	}
 
 	return &res, nil
 }
 
+// CreateDomain -- Code commentation required
 func (c *Client) CreateDomain(domain, serverName, ipv6 string) (*Response, error) {
-	params := make(map[string]string)
-	params["domain"] = domain
-	params["server_name"] = serverName
-	params["ipv6"] = ipv6
+	var (
+		params = map[string]string{
+			"domain":      domain,
+			"server_name": serverName,
+			"ipv6":        ipv6,
+		}
+		res = Response{}
+	)
 
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/create", nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	res := Response{}
-	if err := c.sendRequest(req, &res, params); err != nil {
+	if err := c.getRequest(&res, "/domain/create", params); err != nil {
 		return nil, err
 	}
 
 	return &res, nil
 }
 
+// GetDNSDetails -- Code commentation required
 func (c *Client) GetDNSDetails(domainName string) (*models.DNSDetails, error) {
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/show", nil)
-	if err != nil {
-		return nil, err
-	}
-
 	var res models.DNSDetails
-	if err := c.sendRequest(req, &res, nil); err != nil {
+
+	if err := c.getRequest(&res, "/domain/manage/"+domainName+"/show", nil); err != nil {
 		return nil, err
 	}
 
 	return &res, nil
 }
 
+// DNSAdd -- Code commentation required
 func (c *Client) DNSAdd(domainName, recordName, recordContent, recordPriority, recordType string) (*models.Record, error) {
-	params := make(map[string]string)
-	params["record_name"] = recordName
-	params["record_content"] = recordContent
-	params["record_priority"] = recordPriority
-	params["record_type"] = recordType
+	var (
+		params = map[string]string{
+			"record_name":     recordName,
+			"record_content":  recordContent,
+			"record_priority": recordPriority,
+			"record_type":     recordType,
+		}
+		res models.Record
+	)
 
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/add", nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var res models.Record
-	if err := c.sendRequest(req, &res, params); err != nil {
-		return nil, err
-	}
-
-	return &res, nil
-}
-
-func (c *Client) DNSUpdate(domainName, recordContent, recordId, recordPriority string) (*models.Record, error) {
-	params := make(map[string]string)
-	params["record_content"] = recordContent
-	params["record_id"] = recordId
-	params["record_priority"] = recordPriority
-
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/update", nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	var res models.Record
-	if err := c.sendRequest(req, &res, params); err != nil {
+	if err := c.getRequest(&res, "/domain/manage/"+domainName+"/add", params); err != nil {
 		return nil, err
 	}
 
 	return &res, nil
 }
 
-func (c *Client) DNSDelete(domainName, recordId string) (*Response, error) {
-	params := make(map[string]string)
-	params["record_id"] = recordId
+// DNSUpdate -- Code commentation required
+func (c *Client) DNSUpdate(domainName, recordContent, recordID, recordPriority string) (*models.Record, error) {
+	var (
+		params = map[string]string{
+			"record_content":  recordContent,
+			"record_id":       recordID,
+			"record_priority": recordPriority,
+		}
+		res models.Record
+	)
 
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/delete", nil)
-	if err != nil {
-		return nil, err
-	}
-
-	res := Response{}
-	if err := c.sendRequest(req, &res, params); err != nil {
+	if err := c.getRequest(&res, "/domain/manage/"+domainName+"/update", params); err != nil {
 		return nil, err
 	}
 
 	return &res, nil
 }
 
+// DNSDelete -- Code commentation required
+func (c *Client) DNSDelete(domainName, recordID string) (*Response, error) {
+	var (
+		params = map[string]string{
+			"record_id": recordID,
+		}
+		res = Response{}
+	)
+
+	if err := c.getRequest(&res, "/domain/manage/"+domainName+"/delete", params); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
+// DNSPush -- Code commentation required
 func (c *Client) DNSPush(domainName string) (*Response, error) {
-	req, err := http.NewRequest("GET", c.BaseURL+"/domain/manage/"+domainName+"/push", nil)
-	if err != nil {
-		return nil, err
-	}
-
 	res := Response{}
-	if err := c.sendRequest(req, &res, nil); err != nil {
+
+	if err := c.getRequest(&res, "/domain/manage/"+domainName+"/push", nil); err != nil {
 		return nil, err
 	}
 

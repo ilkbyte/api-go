@@ -6,8 +6,10 @@ import (
 	"time"
 )
 
+// BaseURLV1 -- Code commentation required
 const BaseURLV1 = "https://api.ilkbyte.com"
 
+// Client -- Code commentation required
 type Client struct {
 	BaseURL    string
 	Access     string
@@ -15,6 +17,7 @@ type Client struct {
 	HTTPClient *http.Client
 }
 
+// Response -- Code commentation required
 type Response struct {
 	Status  bool        `json:"status"`
 	Error   string      `json:"error"`
@@ -22,6 +25,7 @@ type Response struct {
 	Data    interface{} `json:"data"`
 }
 
+// NewClient -- Code commentation required
 func NewClient(access, secret string) *Client {
 	return &Client{
 		BaseURL: BaseURLV1,
@@ -59,4 +63,25 @@ func (c *Client) sendRequest(req *http.Request, v interface{}, params map[string
 	}
 
 	return nil
+}
+
+func (c *Client) newRequest(method string, res *interface{}, path string, params map[string]string) (err error) {
+	req, err := http.NewRequest(method, c.BaseURL+path, nil)
+	if err != nil {
+		return err
+	}
+
+	if err := c.sendRequest(req, &res, params); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (c *Client) getRequest(res interface{}, path string, params map[string]string) (err error) {
+	return c.newRequest("GET", &res, path, params)
+}
+
+func (c *Client) postRequest(res interface{}, path string, params map[string]string) (err error) {
+	return c.newRequest("POST", &res, path, params)
 }
