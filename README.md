@@ -20,7 +20,7 @@ import (
 func main() {
 	c := ilkbyte.NewClient("access_key", "secret_key")
 
-	fmt.Println(c.GetAllServers())
+	fmt.Println(c.GetAllServers("page_number"))
 }
 ```
 
@@ -32,7 +32,7 @@ c := ilkbyte.NewClient("access_key", "secret_key")
 // get your account's info.
 c.GetAccountInfo()
 // get your account users.
-c.GetAccountUsers()
+c.GetAccountUsers("page_number")
 ```
 ##### **Server**
 
