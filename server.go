@@ -139,10 +139,14 @@ func (c *Client) GetServerIPLogs(serverName string) (*models.ServerIPLogs, error
 	return &res, nil
 }
 
-func (c *Client) ServerIPRdns(serverName, ip, rdns string) (*Response, error) {
+func (c *Client) ServerIPRdns(serverName, ip, rdns, opt, newRdns string) (*Response, error) {
 	params := make(map[string]string)
 	params["ip"] = ip
 	params["rdns"] = rdns
+	params["opt"] = opt
+	if opt == "update" {
+		params["new_rdns"] = newRdns
+	}
 
 	req, err := http.NewRequest("GET", c.BaseURL+"/server/manage/"+serverName+"/ip/rdns", nil)
 	if err != nil {

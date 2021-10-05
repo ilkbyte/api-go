@@ -55,7 +55,7 @@ c.GetServerIPList("servername")
 // Get ip logs
 c.GetServerIPLogs("servername")
 // Add a new rdns record
-c.ServerIPRdns("servername", "ip", "rdns")
+c.ServerIPRdns("servername", "ip", "rdns", "opt", "newrdns")
 ```
 
 ##### **Backup**
