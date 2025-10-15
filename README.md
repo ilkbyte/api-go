@@ -46,6 +46,8 @@ c.GetActiveServers("page_number")
 c.GetServerConfig()
 // create a new server
 c.CreateServer("name", "username", "password", "osid", "appid", "packageid", "sshkey")
+// delete a new server
+c.DeleteServer("servername")
 // Get server details
 c.GetServerDetails("servername")
 // Server power settings
