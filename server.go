@@ -79,6 +79,20 @@ func (c *Client) CreateServer(name, username, password, osid, appid, packageid, 
 	return &res, nil
 }
 
+func (c *Client) DeleteServer(serverName string) (*Response, error) {
+	req, err := http.NewRequest("GET", c.BaseURL+"/server/manage/"+serverName+"/delete", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var res Response
+	if err := c.sendRequest(req, &res, nil); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 func (c *Client) GetServerDetails(serverName string) (*models.ServerDetails, error) {
 	req, err := http.NewRequest("GET", c.BaseURL+"/server/manage/"+serverName+"/show", nil)
 	if err != nil {
