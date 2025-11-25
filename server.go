@@ -79,6 +79,26 @@ func (c *Client) CreateServer(name, username, password, osid, appid, packageid, 
 	return &res, nil
 }
 
+func (c *Client) CreateServerWithCustomImage(name, packageid, img_url, img_sha256 string) (*models.ServerCreate, error) {
+	params := make(map[string]string)
+	params["name"] = name
+	params["package_id"] = packageid
+	params["img_url"] = img_url
+	params["img_sha256"] = img_sha256
+
+	req, err := http.NewRequest("GET", c.BaseURL+"/server/create/custom-img", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var res models.ServerCreate
+	if err := c.sendRequest(req, &res, params); err != nil {
+		return nil, err
+	}
+
+	return &res, nil
+}
+
 func (c *Client) DeleteServer(serverName string) (*Response, error) {
 	req, err := http.NewRequest("GET", c.BaseURL+"/server/manage/"+serverName+"/delete", nil)
 	if err != nil {
