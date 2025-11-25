@@ -46,6 +46,8 @@ c.GetActiveServers("page_number")
 c.GetServerConfig()
 // create a new server
 c.CreateServer("name", "username", "password", "osid", "appid", "packageid", "sshkey")
+// create a new server with custom image
+c.CreateServerWithCustomImage("name", "packageid", "img_url", "img_sha256")
 // delete a new server
 c.DeleteServer("servername")
 // Get server details
